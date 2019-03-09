@@ -5,11 +5,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,6 +20,7 @@ import carpet.helpers.SpawnChunks;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.LogManager;
@@ -69,6 +65,7 @@ public class CarpetSettings
     public static int railPowerLimitAdjusted = 8;
     public static boolean b_disableSpawnChunks = false;
     public static boolean b_huskSpawningInTemples = false;
+    public static boolean b_optimizeVoxelCode = false;
 
     /*
     public static boolean extendedConnectivity = false;
@@ -354,6 +351,17 @@ public class CarpetSettings
   rule("placementRotationFix",    "fix", "fixes block placement rotation issue when player rotates quickly while placing blocks"),
   rule("endCitySavingFix",        "fix", "Fixes the saving of end cities.")
                                   .extraInfo("Every End city that got saved once was invalidated on a server restart."),
+  rule("optimizeVoxelCode",       "optimization", "optimizes the voxel code which is used by e.g. the entity movement")
+                                  .validate((rule) -> {
+                                      if (!CarpetSettings.getBool(rule))
+                                      {
+                                          VoxelShapes.FULL_CUBE = VoxelShapes.FULL_CUBE_OLD;
+                                      }
+                                      else
+                                      {
+                                          VoxelShapes.FULL_CUBE = VoxelShapes.FULL_CUBE_NEW;
+                                      }
+                                  }).boolAccelerate(),
         };
         for (CarpetSettingEntry rule: RuleList)
         {
