@@ -365,6 +365,7 @@ public class CarpetSettings
                                       }
                                   }).boolAccelerate(),
   rule("chunkCache",              "optimizations", "Improves chunk cache").boolAccelerate(),
+  rule("dragonEggBedrockRemoval", "experimental", "Reintroduce Dragon Egg Bedrock breaking"),
         };
         for (CarpetSettingEntry rule: RuleList)
         {
