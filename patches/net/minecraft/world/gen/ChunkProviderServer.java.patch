@@ -1,0 +1,153 @@
+--- a/net/minecraft/world/gen/ChunkProviderServer.java
++++ b/net/minecraft/world/gen/ChunkProviderServer.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.world.gen;
+ 
++import carpet.CarpetSettings;
+ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+ import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+@@ -9,6 +10,7 @@
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.concurrent.CompletableFuture;
++import java.util.concurrent.atomic.AtomicReferenceArray;
+ import java.util.function.BooleanSupplier;
+ import java.util.function.Consumer;
+ import javax.annotation.Nullable;
+@@ -42,6 +44,7 @@
+     private final IChunkLoader chunkLoader;
+     private final Long2ObjectMap<Chunk> loadedChunks = Long2ObjectMaps.synchronize(new ChunkCacheNeighborNotification(8192));
+     private Chunk field_212472_f;
++    private final AtomicReferenceArray<Chunk> chunkCache = new AtomicReferenceArray<>(256);
+     private final ProtoChunkScheduler chunkScheduler;
+     private final TaskManager<ChunkPos, ChunkStatus, ChunkPrimer> taskManager;
+     private final WorldServer world;
+@@ -86,6 +89,9 @@
+     @Nullable
+     public Chunk provideChunk(int x, int z, boolean p_186025_3_, boolean p_186025_4_)
+     {
++        if (CarpetSettings.b_chunkCache)
++            return provideChunk_new(x, z, p_186025_3_, p_186025_4_);
++        
+         Chunk chunk;
+ 
+         synchronized (this.chunkLoader)
+@@ -215,7 +221,14 @@
+             }
+ 
+             this.loadedChunks.put(k, chunk);
+-            this.field_212472_f = chunk;
++            if (CarpetSettings.b_chunkCache)
++            {
++                this.chunkCache.lazySet(getChunkIndex(i, j), chunk);
++            }
++            else
++            {
++                this.field_212472_f = chunk;
++            }
+         }
+ 
+         this.field_212473_j.addScheduledTask(chunk::onLoad);
+@@ -309,7 +322,17 @@
+                             chunk.onUnload();
+                             this.saveChunkData(chunk);
+                             this.loadedChunks.remove(olong);
+-                            this.field_212472_f = null;
++                            if (CarpetSettings.b_chunkCache)
++                            {
++                                final int cacheIndex = getChunkIndex(chunk.x, chunk.z);
++                                final Chunk cachedChunk = this.chunkCache.get(cacheIndex);
++                                if (cachedChunk == chunk)
++                                    this.chunkCache.lazySet(cacheIndex, null);
++                            }
++                            else
++                            {
++                                this.field_212472_f = null;
++                            }
+                             ++i;
+                         }
+                     }
+@@ -360,6 +383,82 @@
+ 
+     public boolean chunkExists(int x, int z)
+     {
++        if (CarpetSettings.b_chunkCache)
++        {
++            Chunk chunk = this.chunkCache.get(getChunkIndex(x, z));
++            if (chunk != null && chunk.getPos().x == x && chunk.getPos().z == z)
++                return true;
++        }
++
+         return this.loadedChunks.containsKey(ChunkPos.asLong(x, z));
+     }
++
++    private static int getChunkIndex(int x, int z)
++    {
++        return ((x & 15) << 4) | (z & 15);
++    }
++
++    @Nullable
++    public Chunk provideChunk_new(int x, int z, boolean p_186025_3_, boolean p_186025_4_)
++    {
++        Chunk chunk = this.chunkCache.get(getChunkIndex(x, z));
++
++        if (chunk != null && chunk.getPos().x == x && chunk.getPos().z == z)
++        {
++            return chunk;
++        }
++
++        synchronized (this.chunkLoader)
++        {
++
++            long i = ChunkPos.asLong(x, z);
++            chunk = this.loadedChunks.get(i);
++
++            if (chunk != null)
++            {
++                this.chunkCache.lazySet(getChunkIndex(x, z), chunk);
++                return chunk;
++            }
++
++            if (p_186025_3_)
++            {
++                try
++                {
++                    chunk = this.chunkLoader.loadChunk(this.world, x, z, (p_212471_3_) ->
++                    {
++                        p_212471_3_.setLastSaveTime(this.world.getGameTime());
++                        this.loadedChunks.put(ChunkPos.asLong(x, z), p_212471_3_);
++                    });
++                }
++                catch (Exception exception)
++                {
++                    LOGGER.error("Couldn't load chunk", (Throwable)exception);
++                }
++            }
++        }
++
++        if (chunk != null)
++        {
++            this.field_212473_j.addScheduledTask(chunk::onLoad);
++            return chunk;
++        }
++        else if (p_186025_4_)
++        {
++            try
++            {
++                this.taskManager.startBatch();
++                this.taskManager.addToBatch(new ChunkPos(x, z));
++                CompletableFuture<ChunkPrimer> completablefuture = this.taskManager.finishBatch();
++                return completablefuture.thenApply(this::convertToChunk).join();
++            }
++            catch (RuntimeException runtimeexception)
++            {
++                throw this.makeReportedException(x, z, runtimeexception);
++            }
++        }
++        else
++        {
++            return null;
++        }
++    }
+ }

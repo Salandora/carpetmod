@@ -67,6 +67,7 @@ public class CarpetSettings
     public static boolean b_disableSpawnChunks = false;
     public static boolean b_huskSpawningInTemples = false;
     public static boolean b_optimizeVoxelCode = false;
+    public static boolean b_chunkCache = false;
 
     /*
     public static boolean extendedConnectivity = false;
@@ -363,6 +364,7 @@ public class CarpetSettings
                                           VoxelShapes.FULL_CUBE = VoxelShapes.FULL_CUBE_NEW;
                                       }
                                   }).boolAccelerate(),
+  rule("chunkCache",              "optimizations", "Improves chunk cache").boolAccelerate(),
         };
         for (CarpetSettingEntry rule: RuleList)
         {
