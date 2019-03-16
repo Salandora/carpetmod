@@ -1,0 +1,20 @@
+--- a/net/minecraft/entity/passive/EntitySquid.java
++++ b/net/minecraft/entity/passive/EntitySquid.java
+@@ -1,6 +1,8 @@
+ package net.minecraft.entity.passive;
+ 
+ import javax.annotation.Nullable;
++
++import carpet.helpers.entities.AbstractWaterCreature;
+ import net.minecraft.block.state.IBlockState;
+ import net.minecraft.entity.EntityLivingBase;
+ import net.minecraft.entity.EntityType;
+@@ -25,7 +27,7 @@
+ import net.minecraftforge.api.distmarker.Dist;
+ import net.minecraftforge.api.distmarker.OnlyIn;
+ 
+-public class EntitySquid extends EntityWaterMob
++public class EntitySquid extends AbstractWaterCreature
+ {
+     public float squidPitch;
+     public float prevSquidPitch;

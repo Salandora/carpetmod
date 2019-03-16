@@ -1,6 +1,15 @@
 --- a/net/minecraft/entity/passive/AbstractFish.java
 +++ b/net/minecraft/entity/passive/AbstractFish.java
-@@ -33,6 +33,11 @@
+@@ -1,6 +1,8 @@
+ package net.minecraft.entity.passive;
+ 
++import carpet.CarpetSettings;
+ import net.minecraft.advancements.CriteriaTriggers;
++import net.minecraft.entity.Entity;
+ import net.minecraft.entity.EntityType;
+ import net.minecraft.entity.MoverType;
+ import net.minecraft.entity.SharedMonsterAttributes;
+@@ -33,6 +35,11 @@
  {
      private static final DataParameter<Boolean> FROM_BUCKET = EntityDataManager.createKey(AbstractFish.class, DataSerializers.BOOLEAN);
  
@@ -12,3 +21,56 @@
      public AbstractFish(EntityType<?> type, World p_i48855_2_)
      {
          super(type, p_i48855_2_);
+@@ -66,6 +73,52 @@
+         return !this.isFromBucket() && !this.hasCustomName();
+     }
+ 
++    @Override
++    protected void checkDespawn()
++    {
++        if (!CarpetSettings.b_despawnFishes)
++        {
++            super.checkDespawn();
++            return;
++        }
++
++        if (this.isNoDespawnRequired())
++        {
++            this.idleTime = 0;
++        }
++        else
++        {
++            Entity entity = this.world.getClosestPlayerToEntity(this, -1.0D);
++
++            if (entity != null)
++            {
++                double d0 = entity.posX - this.posX;
++                double d1 = entity.posY - this.posY;
++                double d2 = entity.posZ - this.posZ;
++                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
++
++                if (this.canDespawn() && d3 > 16384.0D)
++                {
++                    this.remove();
++                    return;
++                }
++
++                if (this.idleTime > 600 && d3 > 1024.0D && this.canDespawn() && this.rand.nextInt(800) == 0 )
++                {
++                    this.remove();
++                }
++                else if (d3 < 1024.0D)
++                {
++                    this.idleTime = 0;
++                }
++            }
++            else if (this.canDespawn())
++            {
++                this.remove();
++            }
++        }
++    }
++
+     public int getMaxSpawnedInChunk()
+     {
+         return 8;

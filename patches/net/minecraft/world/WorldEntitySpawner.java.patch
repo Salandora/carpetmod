@@ -16,7 +16,7 @@
  import net.minecraft.util.WeightedRandom;
  import net.minecraft.util.math.BlockPos;
  import net.minecraft.util.math.ChunkPos;
-@@ -81,19 +84,58 @@
+@@ -81,19 +84,60 @@
                  }
              }
  
@@ -36,6 +36,8 @@
 +            String level_suffix = (did==0)?"":((did<0?" (N)":" (E)"));
 +            //CM end
 +
++            next_type:
++
              for (EnumCreatureType enumcreaturetype : EnumCreatureType.values())
              {
 +                //CM start
@@ -53,20 +55,21 @@
 +                    //CM replaced: //int l4 = enumcreaturetype.getMaxNumberOfCreature() * i / MOB_COUNT_DIV;
 +                    int l4 = (int)(Math.pow(2.0,(SpawnReporter.mobcap_exponent/4)) * enumcreaturetype.getMaxNumberOfCreature() * i / MOB_COUNT_DIV);
  
+-                    if (i5 <= l4)
 +                    int i5 = worldServerIn.countEntities(enumcreaturetype.getBaseClass(), 100000); // CM replaced l4 with 100000 TODO consider calling it now specifically because of the limits
 +
 +                    SpawnReporter.mobcaps.get(did).put(enumcreaturetype, new Tuple<>(i5, l4));
 +                    int tries = SpawnReporter.spawn_tries.get(type_code);
 +                    if (SpawnReporter.track_spawns > 0L)
-+                    {
+                     {
 +                        SpawnReporter.spawn_attempts.put(group_code, SpawnReporter.spawn_attempts.get(group_code) + tries);
 +                        SpawnReporter.spawn_cap_count.put(group_code, SpawnReporter.spawn_cap_count.get(group_code) + i5);
 +                    }
 +                    if (SpawnReporter.mock_spawns) { i5 = 0; } // no mobcaps
 +                    //CM end
 +
-                     if (i5 <= l4)
-                     {
++                    if (i5 < l4)
++                    {
                          BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 +                      /* carpet mod -> extra indentation */
 +                      for (int trie = 0; trie < tries; trie++)
@@ -77,7 +80,7 @@
                          label158:
  
                          for (ChunkPos chunkpos1 : this.eligibleChunksForSpawning)
-@@ -117,6 +159,10 @@
+@@ -117,6 +161,10 @@
                                      Biome.SpawnListEntry biome$spawnlistentry = null;
                                      IEntityLivingData ientitylivingdata = null;
                                      int l3 = MathHelper.ceil(Math.random() * 4.0D);
@@ -88,38 +91,51 @@
                                      int i4 = 0;
  
                                      for (int j4 = 0; j4 < l3; ++j4)
-@@ -144,6 +190,7 @@
+@@ -144,7 +192,8 @@
                                                          break;
                                                      }
  
-+                                                if (CarpetSettings.n_mobSpawningAlgorithm >= 113)
-                                                     l3 = biome$spawnlistentry.minGroupCount + worldServerIn.rand.nextInt(1 + biome$spawnlistentry.maxGroupCount - biome$spawnlistentry.minGroupCount);
+-                                                    l3 = biome$spawnlistentry.minGroupCount + worldServerIn.rand.nextInt(1 + biome$spawnlistentry.maxGroupCount - biome$spawnlistentry.minGroupCount);
++                                                    if (CarpetSettings.n_mobSpawningAlgorithm >= 113)
++                                                        l3 = biome$spawnlistentry.minGroupCount + worldServerIn.rand.nextInt(1 + biome$spawnlistentry.maxGroupCount - biome$spawnlistentry.minGroupCount);
                                                  }
  
-@@ -175,8 +222,22 @@
+                                                 if (worldServerIn.canCreatureTypeSpawnHere(enumcreaturetype, biome$spawnlistentry, blockpos$mutableblockpos))
+@@ -175,13 +224,32 @@
                                                              {
                                                                  ++j2;
                                                                  ++i4;
-+                                                            //CM replacing //worldServerIn.spawnEntity(entityliving)
-+                                                            ++local_spawns;
-+                                                            if (SpawnReporter.track_spawns > 0L)
-+                                                            {
-+                                                                String species = entityliving.getEntityString();
-+                                                                SpawnReporter.registerSpawn(entityliving, type_code, species, blockpos$mutableblockpos);
-+                                                            }
-+                                                            if (SpawnReporter.mock_spawns)
-+                                                            {
-+                                                                entityliving.remove();
-+                                                            }
-+                                                            else
-+                                                            {
-                                                                 worldServerIn.spawnEntity(entityliving);
+-                                                                worldServerIn.spawnEntity(entityliving);
++                                                                //CM replacing //worldServerIn.spawnEntity(entityliving)
++                                                                ++local_spawns;
++                                                                if (SpawnReporter.track_spawns > 0L)
++                                                                {
++                                                                    String species = entityliving.getEntityString();
++                                                                    SpawnReporter.registerSpawn(entityliving, type_code, species, blockpos$mutableblockpos);
++                                                                }
++                                                                if (SpawnReporter.mock_spawns)
++                                                                {
++                                                                    entityliving.remove();
++                                                                }
++                                                                else
++                                                                {
++                                                                    worldServerIn.spawnEntity(entityliving);
++                                                                }
                                                              }
-+                                                            }
                                                              else
                                                              {
                                                                  entityliving.remove();
-@@ -202,7 +263,30 @@
+                                                             }
+ 
++                                                            if (i5 + j2 >= l4)
++                                                            {
++                                                                continue next_type;
++                                                            }
++
+                                                             if (j2 >= entityliving.getMaxSpawnedInChunk())
+                                                             {
+                                                                 continue label158;
+@@ -202,7 +270,30 @@
                                  }
                              }
                          }
@@ -150,7 +166,7 @@
                  }
              }
  
-@@ -216,6 +300,10 @@
+@@ -216,6 +307,10 @@
          int i = x * 16 + worldIn.rand.nextInt(16);
          int j = z * 16 + worldIn.rand.nextInt(16);
          int k = chunk.getTopBlockY(Heightmap.Type.LIGHT_BLOCKING, i, j) + 1;
