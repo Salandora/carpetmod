@@ -8,7 +8,7 @@ import carpet.utils.BlockInfo;
 import carpet.utils.Messenger;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandSource;
@@ -415,7 +415,7 @@ public class CarpetExpression
             {
                 throw new InternalExpressionException("Unknown entity selection criterion: "+who);
             }
-            List<Entity> entityList = ((CarpetContext)c).s.getWorld().getEntitiesWithinAABB(pair.getKey(), area, pair.getValue());
+            List<Entity> entityList = ((CarpetContext)c).s.getWorld().getEntitiesWithinAABB(pair.getFirst(), area, pair.getSecond());
             return (_c, _t ) -> ListValue.wrap(entityList.stream().map(EntityValue::new).collect(Collectors.toList()));
         });
 

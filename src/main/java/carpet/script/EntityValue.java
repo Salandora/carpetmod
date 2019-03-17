@@ -2,7 +2,7 @@ package carpet.script;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.command.arguments.NBTPathArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
