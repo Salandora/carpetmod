@@ -127,7 +127,7 @@
                                                                  entityliving.remove();
                                                              }
  
-+                                                            if (i5 + j2 >= l4)
++                                                            if (CarpetSettings.b_strictLimitMobcap && i5 + j2 >= l4)
 +                                                            {
 +                                                                continue next_type;
 +                                                            }

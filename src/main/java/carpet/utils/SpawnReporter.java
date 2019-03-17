@@ -34,7 +34,7 @@ import java.lang.Math;
 
 public class SpawnReporter
 {
-    public static String [] mob_groups = {"hostile","passive","water","ambient"};
+    public static String [] mob_groups = {"hostile","passive","water","ambient", "water_ambient"};
     public static boolean mock_spawns = false;
     
     public static Long track_spawns = 0L;
@@ -214,6 +214,10 @@ public class SpawnReporter
         else if ("ambient".equalsIgnoreCase(type_code))
         {
             return EnumCreatureType.AMBIENT;
+        }
+        else if ("water_ambient".equalsIgnoreCase(type_code))
+        {
+            return EnumCreatureType.WATER_AMBIENT;
         }
         return null;
     }

@@ -4,19 +4,7 @@ package carpet;
 //import carpet.utils.PluginChannelTracker;
 //import carpet.utils.TickingArea;
 
-import carpet.commands.CameraModeCommand;
-import carpet.commands.CarpetCommand;
-import carpet.commands.CounterCommand;
-import carpet.commands.DistanceCommand;
-import carpet.commands.DrawCommand;
-import carpet.commands.ScriptCommand;
-import carpet.commands.InfoCommand;
-import carpet.commands.LogCommand;
-import carpet.commands.PerimeterInfoCommand;
-import carpet.commands.PlayerCommand;
-import carpet.commands.SpawnCommand;
-import carpet.commands.TestCommand;
-import carpet.commands.TickCommand;
+import carpet.commands.*;
 import carpet.logging.LoggerRegistry;
 import carpet.utils.HUDController;
 
@@ -91,6 +79,7 @@ public class CarpetServer // static for now - easier to handle all around the co
         PerimeterInfoCommand.register(dispatcher);
         DrawCommand.register(dispatcher);
         ScriptCommand.register(dispatcher);
+        DespawnCommand.register(dispatcher);
 
         TestCommand.register(dispatcher);
     }

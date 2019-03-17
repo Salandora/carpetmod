@@ -21,6 +21,15 @@
      public AbstractFish(EntityType<?> type, World p_i48855_2_)
      {
          super(type, p_i48855_2_);
+@@ -58,7 +65,7 @@
+     public boolean canSpawn(IWorld worldIn, boolean p_205020_2_)
+     {
+         BlockPos blockpos = new BlockPos(this);
+-        return worldIn.getBlockState(blockpos).getBlock() == Blocks.WATER && worldIn.getBlockState(blockpos.up()).getBlock() == Blocks.WATER ? super.canSpawn(worldIn, p_205020_2_) : false;
++        return !CarpetSettings.b_disableFishSpawning && worldIn.getBlockState(blockpos).getBlock() == Blocks.WATER && worldIn.getBlockState(blockpos.up()).getBlock() == Blocks.WATER ? super.canSpawn(worldIn, p_205020_2_) : false;
+     }
+ 
+     public boolean canDespawn()
 @@ -66,6 +73,52 @@
          return !this.isFromBucket() && !this.hasCustomName();
      }

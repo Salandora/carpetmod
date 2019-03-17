@@ -17,8 +17,8 @@
      CREATURE(EntityAnimal.class, 10, true, true),
      AMBIENT(EntityAmbientCreature.class, 15, true, false),
 -    WATER_CREATURE(EntityWaterMob.class, 15, true, false);
-+    WATER_CREATURE(AbstractWaterCreature.class, 25, true, false),
-+    WATER_AMBIENT(AbstractFish.class, 30, true, false);
++    WATER_CREATURE(AbstractWaterCreature.class, 15, true, false),
++    WATER_AMBIENT(AbstractFish.class, 10, true, false);
  
      private final Class <? extends IAnimal > baseClass;
      private final int maxNumberOfCreature;

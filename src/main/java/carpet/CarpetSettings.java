@@ -69,6 +69,8 @@ public class CarpetSettings
     public static boolean b_optimizeVoxelCode = false;
     public static boolean b_chunkCache = false;
     public static boolean b_despawnFishes = false;
+    public static boolean b_disableFishSpawning = false; // :-(
+    public static boolean b_strictLimitMobcap = false;
 
     /*
     public static boolean extendedConnectivity = false;
@@ -217,6 +219,7 @@ public class CarpetSettings
   rule("commandScript",  "commands", "Enables /script command").isACommand()
                                 .extraInfo("a powerful in-game scripting API"),
   rule("commandPlayer",         "commands", "Enables /player command to control/spawn players").isACommand(),
+  rule("commandDespawn",        "commands", "Enables /despawn command to easily despawn mobs in loaded chunks").isACommand(),
   ////rule("commandRNG",            "commands", "Enables /rng command to manipulate and query rng").defaultTrue(),
   ////rule("newLight",              "optimizations", "Uses alternative lighting engine by PhiPros. AKA NewLight mod"),
   rule("carpets",               "survival", "Placing carpets may issue carpet commands for non-op players"),
@@ -368,6 +371,8 @@ public class CarpetSettings
   rule("chunkCache",              "optimizations", "Improves chunk cache").boolAccelerate(),
   rule("dragonEggBedrockRemoval", "experimental", "Reintroduce Dragon Egg Bedrock breaking"),
   rule("despawnFishes",           "experimental", "Automatically despawn naturally spawned fishes if no player is near them").boolAccelerate(),
+  rule("disableFishSpawning",     "experimental", "Stop fishes from Spawning.").boolAccelerate(),
+  rule("strictLimitMobcap",       "experimental", "Strictzly limit the spawning algorithm to the mobcap").boolAccelerate(),
         };
         for (CarpetSettingEntry rule: RuleList)
         {
