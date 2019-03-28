@@ -71,6 +71,7 @@ public class CarpetSettings
     public static boolean b_despawnFishes = false;
     public static boolean b_disableFishSpawning = false; // :-(
     public static boolean b_strictLimitMobcap = false;
+    public static boolean b_rconChatBridge = false;
 
     /*
     public static boolean extendedConnectivity = false;
@@ -143,7 +144,7 @@ public class CarpetSettings
   //                                         "Requires flying to be enabled on the server"),
   rule("explosionNoBlockDamage", "tnt", "Explosions won't destroy blocks"),
   rule("tntPrimerMomentumRemoved", "tnt", "Removes random TNT momentum when primed"),
-  rule("fastRedstoneDust",      "experimental optimizations", "Lag optimizations for redstone dust")
+  rule("fastRedstoneDust",      "experimental optimizations", "Lag optimizations for rDedstone dust")
                                 .extraInfo("by Theosib").boolAccelerate().defaultFalse(),
   //<with modified protocol> rule("accurateBlockPlacement", "creative", "Allows to place blocks in different orientations. Requires Carpet Client")
   //                              .extraInfo("Also prevents rotations upon placement of dispensers and furnaces","when placed into a world by commands"),
@@ -373,6 +374,7 @@ public class CarpetSettings
   rule("despawnFishes",           "experimental", "Automatically despawn naturally spawned fishes if no player is near them").boolAccelerate(),
   rule("disableFishSpawning",     "experimental", "Stop fishes from Spawning.").boolAccelerate(),
   rule("strictLimitMobcap",       "experimental", "Strictzly limit the spawning algorithm to the mobcap").boolAccelerate(),
+  rule("rconChatBridge",          "experimental survival", "Tweak rcon protocol to allow chat bridges using it").boolAccelerate(),
         };
         for (CarpetSettingEntry rule: RuleList)
         {
