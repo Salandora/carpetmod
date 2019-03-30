@@ -32,7 +32,7 @@ public class DrawCommand
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
         LiteralArgumentBuilder<CommandSource> command = literal("draw").
-                requires((player) -> CarpetSettings.getBool("commandDraw")).
+                requires((player) -> CarpetSettings.getBool("commandDraw") && player.hasPermissionLevel(2)).
                 then(literal("sphere").
                         then(argument("center",BlockPosArgument.blockPos()).
                                 then(argument("radius",IntegerArgumentType.integer(1)).

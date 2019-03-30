@@ -6,6 +6,7 @@ import carpet.utils.SpawnReporter;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandSource;
@@ -33,8 +34,10 @@ public class DespawnCommand
 {
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
-        dispatcher.register(literal("despawn").
-                requires((player) -> CarpetSettings.getBool("commandDespawn")).
+        LiteralArgumentBuilder<CommandSource> literalargumentbuilder = literal("despawn").
+                requires((player) -> CarpetSettings.getBool("commandDespawn") && player.hasPermissionLevel(2));
+
+        literalargumentbuilder.
                 then(literal("entity").
                         then(argument("entity", EntitySummonArgument.entitySummon()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES).
                             executes( (c)-> despawn(c, EntitySummonArgument.getEntityId(c, "entity"), c.getSource().getWorld().dimension.getType())).
@@ -51,8 +54,9 @@ public class DespawnCommand
                                     executes((c) -> despawnType(c, getString(c, "type"), DimensionArgument.func_212592_a(c, "dimension")))
                             )
                     )
-                )
-        );
+                );
+
+        dispatcher.register(literalargumentbuilder);
     }
 
     private static int despawn(CommandContext<CommandSource> c, ResourceLocation name, DimensionType dim)
