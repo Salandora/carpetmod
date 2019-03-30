@@ -1,6 +1,6 @@
 --- a/net/minecraft/entity/EnumCreatureType.java
 +++ b/net/minecraft/entity/EnumCreatureType.java
-@@ -1,17 +1,16 @@
+@@ -1,26 +1,27 @@
  package net.minecraft.entity;
  
 +import carpet.helpers.entities.AbstractWaterCreature;
@@ -21,4 +21,35 @@
 +    WATER_AMBIENT(AbstractFish.class, 10, true, false);
  
      private final Class <? extends IAnimal > baseClass;
-     private final int maxNumberOfCreature;
+-    private final int maxNumberOfCreature;
++    private final int default_maxNumberOfCreature;
++    private int maxNumberOfCreature;
+     private final boolean isPeacefulCreature;
+     private final boolean isAnimal;
+ 
+     private EnumCreatureType(Class <? extends IAnimal > p_i47849_3_, int p_i47849_4_, boolean p_i47849_5_, boolean p_i47849_6_)
+     {
+         this.baseClass = p_i47849_3_;
++        this.default_maxNumberOfCreature = p_i47849_4_;
+         this.maxNumberOfCreature = p_i47849_4_;
+         this.isPeacefulCreature = p_i47849_5_;
+         this.isAnimal = p_i47849_6_;
+@@ -31,10 +32,18 @@
+         return this.baseClass;
+     }
+ 
++    public int getDefaultMaxNumberOfCreature()
++    {
++        return this.default_maxNumberOfCreature;
++    }
+     public int getMaxNumberOfCreature()
+     {
+         return this.maxNumberOfCreature;
+     }
++    public void setMaxNumberOfCreature(int max)
++    {
++        this.maxNumberOfCreature = max;
++    }
+ 
+     public boolean getPeacefulCreature()
+     {

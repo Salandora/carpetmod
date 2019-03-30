@@ -40,7 +40,7 @@ public class SpawnCommand
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
         LiteralArgumentBuilder<CommandSource> literalargumentbuilder = literal("spawn").
-                requires((player) -> CarpetSettings.getBool("commandSpawn"));
+                requires((player) -> CarpetSettings.getBool("commandSpawn") && player.hasPermissionLevel(2));
 
         literalargumentbuilder.
                 then(literal("list").
@@ -93,7 +93,11 @@ public class SpawnCommand
                         executes( (c) -> generalMobcaps(c.getSource())).
                         then(literal("set").
                                 then(argument("cap (hostile)", integer(1,1400)).
-                                        executes( (c) -> setMobcaps(c.getSource(), getInteger(c, "cap (hostile)"))))).
+                                        executes( (c) -> setMobcaps(c.getSource(), getInteger(c, "cap (hostile)")))).
+                                then(argument("type", StringArgumentType.word()).
+                                        suggests( (c, b) -> ISuggestionProvider.suggest(SpawnReporter.mob_groups,b)).
+                                                then(argument("cap", integer(1,1400)).
+                                                        executes((c) -> setMobcaps(c.getSource(), getString(c, "type"), getInteger(c, "cap")))))).
                         then(argument("dimension", DimensionArgument.func_212595_a()).
                                 executes( (c)-> mobcapsForDimension(c.getSource(), DimensionArgument.func_212592_a(c, "dimension"))))).
                 then(literal("entities").
@@ -239,6 +243,22 @@ public class SpawnCommand
         double desired_ratio = (double)hostile_cap/ EnumCreatureType.MONSTER.getMaxNumberOfCreature();
         SpawnReporter.mobcap_exponent = 4.0*Math.log(desired_ratio)/Math.log(2.0);
         Messenger.m(source, String.format("gi Mobcaps for hostile mobs changed to %d, other groups will follow", hostile_cap));
+        return 1;
+    }
+
+    private static int setMobcaps(CommandSource source, String mobType, int cap)
+    {
+        EnumCreatureType type = SpawnReporter.get_creature_type_from_code(mobType);
+        if (type == null)
+        {
+            Messenger.m(source, String.format("r Incorrect creature type: %s", mobType));
+            return 0;
+        }
+
+        cap = cap != -1 ? cap : type.getDefaultMaxNumberOfCreature();
+        type.setMaxNumberOfCreature(cap);
+
+        Messenger.m(source, String.format("gi Mobcap for %s changed to %d", SpawnReporter.get_type_string(type), cap));
         return 1;
     }
 
