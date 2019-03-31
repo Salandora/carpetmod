@@ -77,6 +77,12 @@ public class VoxelShapeAABB extends VoxelShape
     }
 
     @Override
+    protected double func_212431_a_new(AxisRotation axisRotation, final AxisAlignedBB shape, final double maxDist)
+    {
+        return this.func_212431_a(axisRotation, shape, maxDist);
+    }
+
+    @Override
     protected double func_212431_a(AxisRotation axisRotation, final AxisAlignedBB shape, final double maxDist)
     {
         if (Math.abs(maxDist) < 1E-7)

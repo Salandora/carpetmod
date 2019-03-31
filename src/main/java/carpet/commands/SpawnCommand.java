@@ -96,7 +96,7 @@ public class SpawnCommand
                                         executes( (c) -> setMobcaps(c.getSource(), getInteger(c, "cap (hostile)")))).
                                 then(argument("type", StringArgumentType.word()).
                                         suggests( (c, b) -> ISuggestionProvider.suggest(SpawnReporter.mob_groups,b)).
-                                                then(argument("cap", integer(1,1400)).
+                                                then(argument("cap", integer(-1,1400)).
                                                         executes((c) -> setMobcaps(c.getSource(), getString(c, "type"), getInteger(c, "cap")))))).
                         then(argument("dimension", DimensionArgument.func_212595_a()).
                                 executes( (c)-> mobcapsForDimension(c.getSource(), DimensionArgument.func_212592_a(c, "dimension"))))).
