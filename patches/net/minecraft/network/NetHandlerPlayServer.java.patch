@@ -166,7 +166,26 @@
                              {
                                  float f2 = this.player.isElytraFlying() ? 300.0F : 100.0F;
  
-@@ -1219,6 +1164,14 @@
+@@ -1123,7 +1068,17 @@
+     {
+         LOGGER.info("{} lost connection: {}", this.player.getName().getString(), reason.getString());
+         this.server.refreshStatusNextTick();
+-        this.server.getPlayerList().sendMessage((new TextComponentTranslation("multiplayer.player.left", this.player.getDisplayName())).applyTextStyle(TextFormatting.YELLOW));
++        TextComponentTranslation textcomponenttranslation = new TextComponentTranslation("multiplayer.player.left", new Object[] {this.player.getDisplayName()});
++        this.server.getPlayerList().sendMessage(textcomponenttranslation.applyTextStyle(TextFormatting.YELLOW));
++    
++        // [CM] Rcon chat bridge - send message when player disconnects
++        if (CarpetSettings.b_rconChatBridge)
++        {
++            RConThreadMain rconThread = ((DedicatedServer)this.server).rconThread;
++            if (rconThread != null)
++                rconThread.sendMessageCarpetChatBridge(textcomponenttranslation.getUnformattedComponentText());
++        }
++        
+         this.player.disconnect();
+         this.server.getPlayerList().playerLoggedOut(this.player);
+ 
+@@ -1219,6 +1174,14 @@
              {
                  ITextComponent itextcomponent = new TextComponentTranslation("chat.type.text", this.player.getDisplayName(), s);
                  this.server.getPlayerList().sendMessage(itextcomponent, false);
