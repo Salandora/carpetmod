@@ -375,6 +375,7 @@ public class CarpetSettings
   rule("disableFishSpawning",     "experimental", "Stop fishes from Spawning.").boolAccelerate(),
   rule("strictLimitMobcap",       "experimental", "Strictzly limit the spawning algorithm to the mobcap").boolAccelerate(),
   rule("rconChatBridge",          "experimental survival", "Tweak rcon protocol to allow chat bridges using it").boolAccelerate(),
+  rule("dispenserSheepShearing",  "experimental", "Sheep can be sheared using dispensers with shears similar to 1.14 behaviour")
         };
         for (CarpetSettingEntry rule: RuleList)
         {
