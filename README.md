@@ -1,5 +1,24 @@
-# CarpetMod for Minecraft 1.13.1
-The most comprehensive and convoluted mod for carpets evar. However it doesn't include carpets yet. Built based on jarmod-buildsystem-2 by Earthcomputer. See Earthcomputer's repo for details on the build system.
+# CarpetMod for Minecraft 1.13.2
+The most comprehensive and convoluted mod for carpets evar. Built based on jarmod-buildsystem-2 by Earthcomputer using Forge Gradle system by Minecraft Forge team. See Earthcomputer's repo for details on the build system.
+
+## Gimme, gimme, I just wanna play
+- Then go get the install package (zip folder) for your system from https://github.com/gnembon/carpetmod/releases , and follow the README that is inside of the zip package. Each installer contains patches for both server and singleplayer versions, and (the best case scenario) should require you to just doubleclick (running) on one patching script.
+
+## tl;dr (to help us develop carpet mod)
+- Have Java SDK and git installed (prefferably, or download zipped repo to a folder)
+- open command prompt  
+- type:
+- - `/git clone https://github.com/gnembon/carpetmod.git`
+- - `/cd carpetmod`
+- - `/gradlew setup`
+- - `/gradlew genPatches`
+- - `/gradlew createRelease`
+- patches for client and server are in `/build/distributions`
+- optionally (to patch the server automatically)
+- - have commandline 7za installed
+- - `patch_server.cmd`
+- - your server should be running in your saves folder already. Connect to `localhost`
+ 
 
 ## Requirements
 - You need to have at least JDK8 update 92 for recompilation to work, due to a bug in earlier versions of `javac`. You also cannot use JDK9 or JDK10 yet.

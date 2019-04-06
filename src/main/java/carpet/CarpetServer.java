@@ -4,12 +4,22 @@ package carpet;
 //import carpet.utils.PluginChannelTracker;
 //import carpet.utils.TickingArea;
 
-import carpet.commands.*;
+import carpet.commands.CameraModeCommand;
+import carpet.commands.CarpetCommand;
+import carpet.commands.CounterCommand;
+import carpet.commands.DistanceCommand;
+import carpet.commands.DrawCommand;
+import carpet.commands.ScriptCommand;
+import carpet.commands.InfoCommand;
+import carpet.commands.LogCommand;
+import carpet.commands.PerimeterInfoCommand;
+import carpet.commands.PlayerCommand;
+import carpet.commands.SpawnCommand;
+import carpet.commands.TestCommand;
+import carpet.commands.TickCommand;
 import carpet.logging.LoggerRegistry;
 import carpet.utils.HUDController;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import java.util.List;
+
 import java.util.Random;
 
 //import narcolepticfrog.rsmm.events.PlayerConnectionEventDispatcher;
@@ -22,10 +32,7 @@ import java.util.Random;
 import carpet.helpers.TickSpeed;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.EntityPlayerMP;
 //import carpet.logging.LoggerRegistry;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 
 public class CarpetServer // static for now - easier to handle all around the code, its one anyways
@@ -82,6 +89,8 @@ public class CarpetServer // static for now - easier to handle all around the co
         InfoCommand.register(dispatcher);
         DistanceCommand.register(dispatcher);
         PerimeterInfoCommand.register(dispatcher);
+        DrawCommand.register(dispatcher);
+        ScriptCommand.register(dispatcher);
 
         TestCommand.register(dispatcher);
     }
