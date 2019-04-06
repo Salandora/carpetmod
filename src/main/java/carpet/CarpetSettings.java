@@ -371,6 +371,7 @@ public class CarpetSettings
                                   }).boolAccelerate(),
   rule("chunkCache",              "optimizations", "Improves chunk cache").boolAccelerate(),
   rule("dragonEggBedrockRemoval", "experimental", "Reintroduce Dragon Egg Bedrock breaking"),
+  rule("dragonEggBedrockRemoval.Y0", "experimental", "Let dragon eggs break Y0 bedrock"),
   rule("despawnFishes",           "experimental", "Automatically despawn naturally spawned fishes if no player is near them").boolAccelerate(),
   rule("disableFishSpawning",     "experimental", "Stop fishes from Spawning.").boolAccelerate(),
   rule("strictLimitMobcap",       "experimental", "Strictzly limit the spawning algorithm to the mobcap").boolAccelerate(),
