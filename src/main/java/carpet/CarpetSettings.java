@@ -348,6 +348,7 @@ public class CarpetSettings
   rule("placementRotationFix",    "fix", "fixes block placement rotation issue when player rotates quickly while placing blocks"),
   rule("renewableCoral",          "feature", "Alternative cashing strategy for nether portals"),
   rule("dragonEggBedrockRemoval", "experimental", "Reintroduce Dragon Egg Bedrock breaking"),
+  rule("dragonEggBedrockRemoval.Y0", "experimental", "Let dragon eggs break Y0 bedrock"),
         };
         for (CarpetSettingEntry rule: RuleList)
         {
