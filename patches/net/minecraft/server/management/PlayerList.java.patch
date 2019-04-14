@@ -35,16 +35,19 @@
          nethandlerplayserver.sendPacket(new SPacketJoinGame(playerIn.getEntityId(), playerIn.interactionManager.getGameType(), worldinfo.isHardcore(), worldserver.dimension.getType(), worldserver.getDifficulty(), this.getMaxPlayers(), worldinfo.getTerrainType(), worldserver.getGameRules().getBoolean("reducedDebugInfo")));
          nethandlerplayserver.sendPacket(new SPacketCustomPayload(SPacketCustomPayload.BRAND, (new PacketBuffer(Unpooled.buffer())).writeString(this.getServer().getServerModName())));
          nethandlerplayserver.sendPacket(new SPacketServerDifficulty(worldinfo.getDifficulty(), worldinfo.isDifficultyLocked()));
-@@ -146,6 +153,13 @@
+@@ -144,8 +151,15 @@
+         }
+         else
          {
-             itextcomponent = new TextComponentTranslation("multiplayer.player.joined.renamed", playerIn.getDisplayName(), s);
+-            itextcomponent = new TextComponentTranslation("multiplayer.player.joined.renamed", playerIn.getDisplayName(), s);
++            itextcomponent = new TextComponentTranslation("multipla#yer.player.joined.renamed", playerIn.getDisplayName(), s);
          }
 +    
 +        if (CarpetSettings.b_rconChatBridge)
 +        {
 +            RConThreadMain rconThread = ((DedicatedServer) this.server).rconThread;
 +            if (rconThread != null)
-+                rconThread.sendMessageCarpetChatBridge(itextcomponent.getUnformattedComponentText());
++                rconThread.sendMessageCarpetChatBridge(itextcomponent.getFormattedText());
 +        }
  
          this.sendMessage(itextcomponent.applyTextStyle(TextFormatting.YELLOW));
