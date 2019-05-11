@@ -20,7 +20,7 @@
      }
  
  default boolean isCollisionBoxesEmpty(@Nullable Entity entityIn, AxisAlignedBB aabb)
-@@ -417,4 +421,200 @@
+@@ -417,4 +421,209 @@
      }
  
      Dimension getDimension();
@@ -134,7 +134,7 @@
 +
 +                final ShapecastConsumer processor = new ShapecastConsumer(createSearchBox(shape, axis, maxDist));
 +
-+                this.process(entity, filter, axis, maxDist > 0. ? EnumFacing.AxisDirection.POSITIVE : EnumFacing.AxisDirection.NEGATIVE, processor);
++                this.process(entity, shape, filter, axis, maxDist > 0. ? EnumFacing.AxisDirection.POSITIVE : EnumFacing.AxisDirection.NEGATIVE, processor);
 +
 +                return processor.d;
 +            }
@@ -160,12 +160,12 @@
 +
 +                final TestEmptyConsumer processor = new TestEmptyConsumer(box);
 +
-+                this.process(entity, filter, EnumFacing.Axis.Y, EnumFacing.AxisDirection.NEGATIVE, processor);
++                this.process(entity, box, filter, EnumFacing.Axis.Y, EnumFacing.AxisDirection.NEGATIVE, processor);
 +
 +                return !processor.nonEmpty;
 +            }
 +
-+            private void process(@Nullable final Entity entity, @Nullable final Predicate<VoxelShape> filter, final EnumFacing.Axis axis, final EnumFacing.AxisDirection dir, final Processor processor)
++            private void process(@Nullable final Entity entity, AxisAlignedBB entityShape, @Nullable final Predicate<VoxelShape> filter, final EnumFacing.Axis axis, final EnumFacing.AxisDirection dir, final Processor processor)
 +            {
 +                final boolean entityInsideBorder = entity != null && !entity.isOutsideBorder();
 +
@@ -183,8 +183,9 @@
 +                final WorldBorder worldborder = IWorldReaderBase.this.getWorldBorder();
 +                final boolean boxInsideBorder = worldborder.minX() < (double) processor.xMin && (double) processor.xMax < worldborder.maxX() && worldborder.minZ() < (double) processor.zMin && (double) processor.zMax < worldborder.maxZ();
 +
-+                //final BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain();
-+                BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
++                final VoxelShape shape = VoxelShapes.create(entityShape);
++
++                final BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain();
 +
 +                for (int coord1 = dir == EnumFacing.AxisDirection.POSITIVE ? min1 : (max1 - 1); dir == EnumFacing.AxisDirection.POSITIVE ? coord1 < axis.getCoordinate(processor.xMax, processor.yMax, processor.zMax) : coord1 >= axis.getCoordinate(processor.xMin, processor.yMin, processor.zMin); coord1 += dir.getOffset())
 +                {
@@ -203,6 +204,12 @@
 +                                else
 +                                    voxelshape = IWorldReaderBase.this.getBlockState(pos).getCollisionShape(IWorldReaderBase.this, pos);
 +
++                                VoxelShape voxelshape1 = shape.offset(-pos.getX(), -pos.getY(), -pos.getZ());
++                                if (VoxelShapes.compare(voxelshape1, voxelshape, IBooleanFunction.AND) || voxelshape == VoxelShapes.fullCube())
++                                {
++                                    voxelshape = VoxelShapes.empty();
++                                }
++
 +                                if (!voxelshape.isEmpty())
 +                                {
 +                                    voxelshape = voxelshape.offset(pos.getX(), pos.getY(), pos.getZ());
@@ -216,6 +223,8 @@
 +                        }
 +                    }
 +                }
++
++                pos.close();
 +            }
 +        };
 +    }
