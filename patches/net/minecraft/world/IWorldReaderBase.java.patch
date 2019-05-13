@@ -204,10 +204,10 @@
 +                                else
 +                                    voxelshape = IWorldReaderBase.this.getBlockState(pos).getCollisionShape(IWorldReaderBase.this, pos);
 +
-+                                VoxelShape voxelshape1 = shape.offset(-pos.getX(), -pos.getY(), -pos.getZ());
-+                                if (VoxelShapes.compare(voxelshape1, voxelshape, IBooleanFunction.AND) || voxelshape == VoxelShapes.fullCube())
++                                VoxelShape voxelshape1 = shape.withOffset(-pos.getX(), -pos.getY(), -pos.getZ());
++                                if (VoxelShapes.compare(voxelshape1, voxelshape, IBooleanFunction.AND))
 +                                {
-+                                    voxelshape = VoxelShapes.empty();
++                                    continue;
 +                                }
 +
 +                                if (!voxelshape.isEmpty())
