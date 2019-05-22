@@ -20,7 +20,7 @@
      }
  
  default boolean isCollisionBoxesEmpty(@Nullable Entity entityIn, AxisAlignedBB aabb)
-@@ -417,4 +421,223 @@
+@@ -417,4 +421,227 @@
      }
  
      Dimension getDimension();
@@ -182,10 +182,14 @@
 +                final int max2 = axis2.getCoordinate(processor.xMax, processor.yMax, processor.zMax);
 +                final int max3 = axis3.getCoordinate(processor.xMax, processor.yMax, processor.zMax);
 +
++                final int xMin = processor.xMin;
++                final int yMin = processor.yMin;
++                final int zMin = processor.zMin;
++
 +                final WorldBorder worldborder = IWorldReaderBase.this.getWorldBorder();
 +                final boolean boxInsideBorder = worldborder.minX() < (double) processor.xMin && (double) processor.xMax < worldborder.maxX() && worldborder.minZ() < (double) processor.zMin && (double) processor.zMax < worldborder.maxZ();
 +
-+                VoxelShapePart voxelshapepart = new VoxelShapePartBitSet(processor.xMax - processor.xMin, processor.yMax - processor.yMin, processor.zMax - processor.zMin);
++                VoxelShapePart voxelshapepart = new VoxelShapePartBitSet(processor.xMax - xMin, processor.yMax - yMin, processor.zMax - zMin);
 +
 +                final BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain();
 +
@@ -206,13 +210,13 @@
 +                                else
 +                                    voxelshape = IWorldReaderBase.this.getBlockState(pos).getCollisionShape(IWorldReaderBase.this, pos);
 +
-+                                if (VoxelShapes.compare(shape.offset(-pos.getX(), -pos.getY(), -pos.getZ()), voxelshape, IBooleanFunction.AND))
++                                if (VoxelShapes.compare(shape.withOffset(-pos.getX(), -pos.getY(), -pos.getZ()), voxelshape, IBooleanFunction.AND))
 +                                {
 +                                    continue;
 +                                }
 +                                else if (voxelshape == VoxelShapes.fullCube())
 +                                {
-+                                    voxelshapepart.setFilled(pos.getX() - processor.xMin, pos.getY() - processor.yMin, pos.getZ() - processor.zMin, true, true);
++                                    voxelshapepart.setFilled(pos.getX() - xMin, pos.getY() - yMin, pos.getZ() - zMin, true, true);
 +                                    continue;
 +                                }
 +
@@ -231,7 +235,7 @@
 +                    }
 +                }
 +
-+                VoxelShape voxelshape = new VoxelShapeInt(voxelshapepart, processor.xMin, processor.yMin, processor.zMin);
++                VoxelShape voxelshape = new VoxelShapeInt(voxelshapepart, xMin, yMin, zMin);
 +                if ((filter == null || filter.test(voxelshape)) && processor.process(voxelshape))
 +                {
 +                    pos.close();
